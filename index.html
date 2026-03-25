@@ -54,22 +54,42 @@
 </div>
 
 <script>
-let rawData=[], viewData=[], colMap={}, page=1;
-const el=id=>document.getElementById(id);
+let rawData = [], viewData = [], colMap = {};
+const el = id => document.getElementById(id);
 
-// データ取得
-async function loadData(){
-  const url="https://script.google.com/macros/s/AKfycby0faWengFZ9TdfnX3LX7JBCbGEy5A1Pw4308MJSWISOLDU2d8vjJcQwmOCoOHBwji7Sg/exec";
-  try{
+// 1. 起動時にキャッシュをチェック
+async function loadData() {
+  const url = "https://script.google.com/macros/s/AKfycby0faWengFZ9TdfnX3LX7JBCbGEy5A1Pw4308MJSWISOLDU2d8vjJcQwmOCoOHBwji7Sg/exec";
+  const CACHE_KEY = 'equipment_data_cache';
+
+  // ローカルストレージからデータを読み込む
+  const cachedData = localStorage.getItem(CACHE_KEY);
+  if (cachedData) {
+    rawData = JSON.parse(cachedData);
+    initAfterLoad(); // キャッシュがあれば即座に表示
+    console.log("Cache loaded: Instant display");
+  }
+
+  // 裏側で最新データを取得（バックグラウンド更新）
+  try {
     const res = await fetch(url);
-    rawData = await res.json();
-    initAfterLoad();
-  }catch(e){
-    el('list').innerHTML = `<div class="p-10 text-center text-red-500">通信エラーが発生しました</div>`;
+    const newData = await res.json();
+    
+    // データが更新されていた場合、またはキャッシュがなかった場合のみ再描画
+    if (JSON.stringify(newData) !== cachedData) {
+      rawData = newData;
+      localStorage.setItem(CACHE_KEY, JSON.stringify(newData));
+      initAfterLoad();
+      console.log("Data updated from Spreadsheet");
+    }
+  } catch (e) {
+    if (!cachedData) {
+      el('list').innerHTML = `<div class="p-10 text-center text-red-500">通信エラー（初回はネット接続が必要です）</div>`;
+    }
   }
 }
 
-function initAfterLoad(){
+function initAfterLoad() {
   normalizeColumns();
   bindCategoryOptions();
   applyFilters();
