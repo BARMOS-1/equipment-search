@@ -66,3 +66,61 @@ main {
 input[type="search"] {
   -webkit-appearance: none;
 }
+
+
+
+
+/* --- インストールガイド & ダイアログの追加設定 --- */
+
+/* 背景を暗くするレイヤー（既存のモーダルと似た質感に） */
+#guide-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  backdrop-filter: blur(4px); /* 背景を少しぼかして高級感を出す */
+}
+
+/* iPhone用ガイドパネル：画面下から浮かび上がるデザイン */
+#ios-guide {
+  display: none;
+  position: fixed;
+  bottom: calc(var(--sab) + 20px); /* ホームバーを避ける */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  z-index: 10000;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* アニメーション（ふわっと表示） */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+#ios-guide.show {
+  display: block;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* インストールボタンのコンテナ（既存のリストやフッターと間隔を空ける） */
+#install-area {
+  padding: 0 24px 24px 24px;
+}
+
+#install-area {
+  /* ヘッダーの中に入れるので sticky top は不要になります（親のheaderがstickyなので） */
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+/* モーダルのz-indexが1000なので、ガイドはそれより上に設定 */
+#guide-overlay { z-index: 10000; }
+#ios-guide { z-index: 10001; }
