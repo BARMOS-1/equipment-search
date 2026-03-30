@@ -331,21 +331,44 @@ function closeModal(){
 // インストールバーを一時的に隠す関数
 function hideInstallBar() {
   const installArea = document.getElementById('install-area');
-  if (installArea) {
-    installArea.style.display = 'none';
+  if (installArea) installArea.style.display = 'none';
+}
+
+// 追加ボタンを押した時のYes/Noダイアログ
+function openInstallDialog() {
+  const result = window.confirm("ホーム画面にアイコンを追加しますか？\n次回から全画面で素早く起動できます。");
+  if (result) {
+    showGuide(); 
+  } else {
+    hideInstallBar(); 
   }
 }
 
-// 追加するボタンを押した時の処理
-function openInstallDialog() {
-  // ブラウザ標準の確認ダイアログ
-  const result = window.confirm("ホーム画面にアイコンを追加しますか？\n次回から全画面で素早く起動できます。");
-  
-  if (result) {
-    showGuide(); // 「はい」ならガイドを表示
-  } else {
-    hideInstallBar(); // 「いいえ」ならバーを消す
-  }
+// ガイドを表示する (今回作成したもの)
+function showGuide() {
+  const overlay = document.getElementById('guide-overlay');
+  const guide = document.getElementById('ios-guide');
+  overlay.style.display = 'block';
+  guide.style.display = 'block';
+  setTimeout(() => {
+    overlay.style.opacity = "1";
+    guide.style.opacity = "1";
+    guide.style.transform = "translate(-50%, -50%) scale(1)";
+  }, 10);
+}
+
+// ガイドを閉じる (今回作成したもの)
+function closeGuide() {
+  const overlay = document.getElementById('guide-overlay');
+  const guide = document.getElementById('ios-guide');
+  overlay.style.opacity = "0";
+  guide.style.opacity = "0";
+  guide.style.transform = "translate(-50%, -45%) scale(0.95)";
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    guide.style.display = 'none';
+    hideInstallBar();
+  }, 300);
 }
 
 // ページ読み込み時の判定（既存の処理を微調整）
@@ -373,21 +396,48 @@ if ('serviceWorker' in navigator) {
 
 </script>
 
-<div id="guide-overlay" onclick="closeGuide()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; backdrop-filter:blur(4px);"></div>
-<div id="ios-guide" style="display:none;">
-  <div class="text-center p-2">
-    <p class="font-bold text-slate-800 text-lg mb-4">iPhoneにインストール</p>
-    <div class="text-left text-sm text-slate-600 space-y-5 mb-6">
-      <div class="flex items-start gap-4">
-        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold flex-shrink-0">1</span>
-        <span>画面下の<strong>「共有ボタン」</strong><img src="https://base-ec2if.akamaized.net/w=640,a=0,q=90/images/user/common/ios_share_icon.png" class="inline w-5 mx-1" alt="共有アイコン">をタップします。</span>
+<div id="guide-overlay" onclick="closeGuide()" style="display:none; position:fixed; inset:0; background:rgba(15, 23, 42, 0.8); z-index:9999; backdrop-filter:blur(8px); transition: all 0.3s;"></div>
+
+<div id="ios-guide" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:400px; z-index:10000;">
+  <div class="bg-white rounded-[32px] p-8 shadow-2xl overflow-hidden relative">
+    
+    <button onclick="closeGuide()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
+
+    <div class="text-center space-y-6">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full mb-2">
+        <span class="text-3xl">📲</span>
       </div>
-      <div class="flex items-start gap-4">
-        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold flex-shrink-0">2</span>
-        <span>メニューを下にスクロールし、<strong>「ホーム画面に追加」</strong>をタップします。</span>
+      
+      <h3 class="text-xl font-black text-slate-800">ホーム画面に追加</h3>
+      
+      <div class="text-left space-y-5">
+        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl">
+          <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-black flex-shrink-0 shadow-lg shadow-blue-200">1</div>
+          <p class="text-sm text-slate-700 font-bold leading-tight">
+            下のツールバーにある<br><strong>「共有ボタン」</strong>をタップ
+          </p>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+        </div>
+
+        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl">
+          <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-black flex-shrink-0 shadow-lg shadow-blue-200">2</div>
+          <p class="text-sm text-slate-700 font-bold leading-tight">
+            リストの中から<br><strong>「ホーム画面に追加」</strong>を選択
+          </p>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </div>
       </div>
+
+      <button onclick="closeGuide()" class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl active:scale-[0.97] transition-all">
+        OK
+      </button>
     </div>
-    <button onclick="closeGuide()" class="w-full py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200 transition-colors">閉じる</button>
   </div>
 </div>
 
