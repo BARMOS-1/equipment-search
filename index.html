@@ -336,12 +336,7 @@ function hideInstallBar() {
 
 // 追加ボタンを押した時のYes/Noダイアログ
 function openInstallDialog() {
-  const result = window.confirm("ホーム画面にアイコンを追加しますか？\n次回から全画面で素早く起動できます。");
-  if (result) {
-    showGuide(); 
-  } else {
-    hideInstallBar(); 
-  }
+  showGuide(); 
 }
 
 // ガイドを表示する (今回作成したもの)

@@ -2,7 +2,7 @@
 body { 
   -webkit-tap-highlight-color: transparent; 
   overscroll-behavior-y: none; 
-  background-color: #f8fafc; 
+  background-color: #feffff; 
 }
 
 /* 変数定義（セーフエリア） */
