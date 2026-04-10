@@ -26,7 +26,7 @@ main {
   padding-bottom: calc(var(--sab) + 1rem);
 }
 
-/* モーダル基本設定 */
+/* --- モーダル基本設定：スマホは下寄せ、PCは中央寄せ --- */
 #modal { 
   position: fixed; 
   inset: 0; 
@@ -34,22 +34,24 @@ main {
   display: none; 
   z-index: 1000; 
   opacity: 0; 
-  transition: opacity 0.3s ease; 
+  transition: opacity 0.3s ease;
+  align-items: flex-end; /* スマホデフォルト：下寄せ */
+  justify-content: center;
 }
 
 #modal.show { 
   display: flex; 
-  align-items: flex-end; 
   opacity: 1; 
 }
 
-/* モーダルの中身：上部をデバイスの端まで広げつつ、中身はセーフエリアを守る */
+/* --- モーダルの中身：スマホの設定 --- */
 #modalContent { 
   background: white; 
   width: 100%; 
   max-height: 92vh; 
   border-radius: 24px 24px 0 0; 
-  padding: 24px 24px calc(var(--sab) + 24px) 24px; 
+  /* paddingを少し詰めて横幅を確保する */
+  padding: 20px 16px calc(var(--sab) + 20px) 16px; 
   overflow-y: auto; 
   transform: translateY(100%); 
   transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
@@ -59,6 +61,39 @@ main {
   transform: translateY(0); 
 }
 
+/* --- PC・タブレット向けの調整（幅768px以上） --- */
+@media (min-width: 768px) {
+  .image-slider img {
+    height: 380px !important;
+  }
+
+  #modalContent {
+    width: 90%;
+    max-width: 1100px;     /* 横並び2カラムが綺麗に収まる幅 */
+    height: 85vh;          /* 浮いている感を出すために高さを少し抑える */
+    border-radius: 24px;   /* 四隅すべてを丸く */
+    padding: 40px; 
+    transform: translateY(20px); 
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  #modal.show #modalContent {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* PCでは写真を大きく表示 */
+ .image-slider img {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  /* スマホの横並び時に大きすぎないよう高さを指定（重要） */
+  height: 180px !important; 
+  object-fit: contain;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+}
 /* スクロールバー非表示 */
 ::-webkit-scrollbar { display: none; }
 
@@ -282,4 +317,25 @@ input[type="search"] {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+
+.cursor-zoom-in {
+  cursor: zoom-in;
+}
+
+
+/* 拡大用オーバーレイ内の画像設定 */
+#zoomed-image {
+  /* scaleの変更を滑らかにする */
+  transition: transform 0.1s ease-out; 
+  cursor: zoom-in;
+  touch-action: pinch-zoom; /* スマホのピンチ操作も維持 */
+  user-select: none;
+}
+
+/* 拡大中の状態 */
+#zoomed-image.zoomed {
+  /* 拡大中は自由に位置を動かせるようにしたい場合は、overflowを設定した親要素が必要ですが、
+     まずはこの設定で「中央に大きく」表示されます */
 }

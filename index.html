@@ -224,7 +224,7 @@ function render(){
             </div>
             <div class="flex flex-col">
               <span class="text-[8px] text-slate-400 font-black uppercase leading-none mb-1">結束数</span>
-              <span class="text-xs font-bold text-slate-700">${r[colMap.stock]}<small class="font-normal ml-0.5">pcs</small></span>
+              <span class="text-xs font-bold text-slate-700">${r[colMap.stock]}<small class="font-normal ml-0.5">束</small></span>
             </div>
           </div>
           
@@ -252,16 +252,16 @@ function showModal(idx){
   let imageHTML = '';
 
   if (imageIds.length > 0) {
-    const hasMultiple = imageIds.length > 1; // 複数枚あるか判定
+    const hasMultiple = imageIds.length > 1; 
     
     imageHTML = `
       <div class="slider-container relative w-full">
         <div class="image-slider flex overflow-x-auto snap-x snap-mandatory gap-3 py-2 no-scrollbar" id="modalSlider">
           ${imageIds.map(id => `
             <img src="https://drive.google.com/thumbnail?id=${id}&sz=w800" 
-                 class="flex-none w-full snap-center h-64 object-contain bg-slate-50 rounded-2xl shadow-sm" 
-                 loading="lazy">
-          `).join('')}
+                 class="flex-none w-full snap-center h-64 object-contain bg-slate-50 rounded-2xl shadow-sm cursor-zoom-in" 
+                 loading="lazy"
+                 onclick="openZoom(this.src)"> `).join('')}
         </div>
         
         ${hasMultiple ? `
@@ -288,10 +288,11 @@ function showModal(idx){
   let baseHTML = '';
   for(const region in colMap.baseRegions){
     baseHTML += `
-      <div class="mt-4 bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
-        <h4 class="text-sm font-bold text-slate-900 mb-3">${region}</h4>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
+      <div class="mt-3">
+        <h4 class="text-[12px] font-black text-slate-400 mb-2 ml-1">${region}</h4>
+        <div class="flex flex-wrap gap-1.5">
     `;
+
     colMap.baseRegions[region].forEach(b => {
       const val = r[b] || '–';
       let colorClass = '';
@@ -300,12 +301,13 @@ function showModal(idx){
       } else if (val === '△') {
         colorClass = 'bg-yellow-50 text-yellow-800 border-yellow-300';
       } else {
-        colorClass = 'bg-red-50 text-red-700 border-red-200';
+        colorClass = 'bg-red-50 text-red-700 border-red-200 opacity-60'; // ×は少し薄くして視認性を高める
       }
+
       baseHTML += `
-        <div class="border ${colorClass} rounded-md py-2 px-1 text-center flex flex-col items-center justify-center min-h-[56px]">
-          <span class="text-[11px] font-medium leading-tight mb-1 break-all">${b.replace('Base','')}</span>
-          <span class="text-xs font-bold">${val}</span>
+        <div class="border ${colorClass} rounded-lg py-1 px-2 flex items-center gap-1.5 min-w-[80px] justify-center">
+          <span class="text-[9px] font-bold whitespace-nowrap">${b.replace('Base','')}</span>
+          <span class="text-[10px] font-black">${val}</span>
         </div>`;
     });
     baseHTML += `</div></div>`;
@@ -313,46 +315,56 @@ function showModal(idx){
 
   // --- HTMLを組み立てて表示 ---
   el('modalContent').innerHTML = `
-    <div class="sticky top-0 bg-white z-30 pt-5 pb-5 border-b border-slate-200 rounded-t-[20px] -mt-6 -mx-6 px-6 shadow-sm overflow-visible
-                before:content-[''] before:absolute before:top-[-100px] before:left-0 before:right-0 before:h-[101px] before:bg-white before:z-[-1]">
+    <div class="bg-white pt-5 pb-4 px-4 rounded-t-[20px] relative z-20 border-b border-slate-100">
       
-      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5 sm:hidden"></div>
+      <div class="w-10 h-1 bg-slate-200 rounded-full mx-auto mb-4 sm:hidden"></div>
+      
+      <button onclick="closeModal()" class="absolute top-3 right-3 w-8 h-8 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center font-bold z-40">✕</button>
 
-      <button onclick="closeModal()" class="absolute top-4 right-4 w-9 h-9 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center font-bold hover:bg-slate-200 z-40">✕</button>
-
-      <div class="max-w-4xl mx-auto">
-        <div class="mb-6">
-          ${imageHTML}
-        </div>
-
-        <h2 class="text-3xl font-black text-slate-950 tracking-tight leading-tight pr-10 mb-5">${r[colMap.name]}</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2 text-sm">
-          <div class="flex items-end gap-2">
-            <span class="text-slate-600 flex-shrink-0 font-medium tracking-tighter">区分:</span>
-            <div class="flex-1 border-b border-dotted border-slate-300 mb-1"></div>
-            <span class="font-bold text-slate-900 flex-shrink-0">** ${r[colMap.category] || '-'} **</span>
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-row gap-4 items-start">
+          
+          <div class="w-[45%] flex-shrink-0">
+            ${imageHTML}
           </div>
-          <div class="flex items-end gap-2">
-            <span class="text-slate-600 flex-shrink-0 font-medium tracking-tighter">機材CD:</span>
-            <div class="flex-1 border-b border-dotted border-slate-300 mb-1"></div>
-            <span class="font-bold text-slate-900 flex-shrink-0">${r[colMap.id] || '-'}</span>
+
+          <div class="flex-1 min-w-0 pt-0.5">
+            <h2 class="text-[15px] font-black text-slate-950 leading-tight mb-1 line-clamp-2">${r[colMap.name]}</h2>
+            
+            <div class="space-y-1 text-[10px] border-t border-slate-100 pt-2">
+              <div class="flex justify-between border-b border-dotted border-slate-200 pb-0.5">
+                <span class="text-slate-400 flex-shrink-0">区分</span>
+                <span class="font-bold text-slate-800 truncate ml-2">${r[colMap.category] || '-'}</span>
+              </div>
+              <div class="flex justify-between border-b border-dotted border-slate-200 pb-0.5">
+                <span class="text-slate-400 flex-shrink-0">機材CD</span>
+                <span class="font-bold text-slate-800 truncate ml-2">${r[colMap.id] || '-'}</span>
+              </div>
+              <div class="flex justify-between border-b border-dotted border-slate-200 pb-0.5">
+                <span class="text-slate-400 flex-shrink-0">単重</span>
+                <span class="font-bold text-slate-800 ml-2">${r[colMap.weight] || '0'}kg</span>
+              </div>
+              <div class="flex justify-between border-b border-dotted border-slate-200 pb-0.5">
+                <span class="text-slate-400 flex-shrink-0">結束</span>
+                <span class="font-bold text-slate-800 ml-2">${r[colMap.stock] || '0'}束</span>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
 
-    <div class="max-w-4xl mx-auto pt-12 relative z-10">
-      <div class="bg-white -mx-6 px-6 pb-6">
-        <h3 class="text-lg font-bold text-slate-950 mb-2 flex items-center gap-2">
-          <span class="w-1 h-4 bg-blue-500 rounded-full"></span>取り扱いBase
+    <div class="bg-white px-4 pt-4 pb-10 relative z-10">
+      <div class="max-w-6xl mx-auto">
+        <h3 class="text-[13px] font-bold text-slate-950 mb-3 flex items-center gap-2">
+          <span class="w-1 h-3 bg-blue-500 rounded-full"></span>在庫状況
         </h3>
         <div class="space-y-4">
           ${baseHTML}
         </div>
       </div>
     </div>
-    <div class="h-8"></div>
   `;
   
   // スライダーのスクロール監視（ドットの更新）
@@ -506,5 +518,73 @@ if ('serviceWorker' in navigator) {
     </button>
   </div>
 </div>
+
+<div id="image-zoom-overlay" onclick="closeZoom()" 
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center; cursor:zoom-out;">
+  <img id="zoomed-image" src="" style="max-width:95%; max-height:95%; object-fit:contain; transition: transform 0.3s ease;">
+  <div style="position:absolute; top:20px; right:20px; color:white; font-size:30px;">✕</div>
+</div>
+
+<script>
+// ズーム状態を管理する変数
+let zoomScale = 1;
+
+// 画像を拡大表示する関数
+function openZoom(src) {
+  const overlay = document.getElementById('image-zoom-overlay');
+  const img = document.getElementById('zoomed-image');
+  
+  // 高画質画像（w1600）に差し替え
+  img.src = src.split('&sz=')[0] + '&sz=w1600';
+  
+  // 初期化
+  zoomScale = 1;
+  img.style.transformOrigin = 'center';
+  img.style.transform = `scale(${zoomScale})`;
+  
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden'; // 背景スクロール禁止
+}
+
+// マウスホイールでのズームイベント
+document.getElementById('zoomed-image').addEventListener('wheel', function(e) {
+  e.preventDefault(); // 画面全体のスクロールを防止
+
+  // ホイールの回転方向で倍率を計算 (上回しで拡大 / 下回しで縮小)
+  const delta = e.deltaY > 0 ? -0.2 : 0.2;
+  const newScale = zoomScale + delta;
+
+  // 倍率制限（最小0.5倍、最大5倍まで）
+  if (newScale >= 0.5 && newScale <= 5) {
+    zoomScale = newScale;
+    
+    // マウスカーソルの位置を中心にズームさせる
+    const rect = this.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    
+    this.style.transformOrigin = `${x}% ${y}%`;
+    this.style.transform = `scale(${zoomScale})`;
+  }
+}, { passive: false });
+
+// 拡大画面内で画像をクリックした時にリセット（通常 ⇔ 2倍）
+document.getElementById('zoomed-image').addEventListener('click', function(e) {
+  e.stopPropagation();
+  if (zoomScale > 1.1) {
+    zoomScale = 1;
+  } else {
+    zoomScale = 2;
+    this.style.transformOrigin = 'center';
+  }
+  this.style.transform = `scale(${zoomScale})`;
+});
+
+// 拡大を閉じる関数
+function closeZoom() {
+  document.getElementById('image-zoom-overlay').style.display = 'none';
+  document.body.style.overflow = ''; // スクロール再開
+}
+</script>
 </body>
 </html>
