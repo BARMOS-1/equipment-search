@@ -327,11 +327,16 @@ input[type="search"] {
 
 /* 拡大用オーバーレイ内の画像設定 */
 #zoomed-image {
-  /* scaleの変更を滑らかにする */
-  transition: transform 0.1s ease-out; 
+  /* scaleアニメーションとピンチ操作を両立させる */
+  transition: transform 0.1s ease-out;
   cursor: zoom-in;
-  touch-action: pinch-zoom; /* スマホのピンチ操作も維持 */
+  
+  /* touch-action を pinch-zoom に設定してブラウザにズームを任せる */
+  touch-action: pinch-zoom; 
+  
+  /* 拡大中に画像が勝手に動かないように制御 */
   user-select: none;
+  -webkit-user-drag: none;
 }
 
 /* 拡大中の状態 */
