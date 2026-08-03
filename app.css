@@ -26,74 +26,72 @@ main {
   padding-bottom: calc(var(--sab) + 1rem);
 }
 
-/* --- モーダル基本設定：スマホは下寄せ、PCは中央寄せ --- */
-#modal { 
-  position: fixed; 
-  inset: 0; 
-  background: rgba(0,0,0,0.6); 
-  display: none; 
-  z-index: 1000; 
-  opacity: 0; 
-  transition: opacity 0.3s ease;
-  align-items: flex-end; /* スマホデフォルト：下寄せ */
+/* =========================================
+   モーダル全体の基本設定（スマホベース）
+   ========================================= */
+#modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* 確実に一番手前に表示 */
+  display: none; /* 初期状態は非表示（JSでflexに切り替え） */
+  align-items: flex-end; /* ★スマホ：画面の下端に寄せる */
   justify-content: center;
 }
 
-#modal.show { 
-  display: flex; 
-  opacity: 1; 
+/* --- モーダルの中身（スマホ用：下からスライド） --- */
+#modalContent {
+  background: white;
+  width: 100%;
+  max-height: 90vh; /* スマホ画面の90%の高さを上限に */
+  border-radius: 24px 24px 0 0; /* 上の角だけ丸くする */
+  padding: 24px 20px 40px;
+  transform: translateY(100%); /* ★初期状態は画面の下枠外に隠す */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto; /* 縦にはみ出た分はスクロール可能に */
 }
 
-/* --- モーダルの中身：スマホの設定 --- */
-#modalContent { 
-  background: white; 
-  width: 100%; 
-  max-height: 92vh; 
-  border-radius: 24px 24px 0 0; 
-  /* paddingを少し詰めて横幅を確保する */
-  padding: 20px 16px calc(var(--sab) + 20px) 16px; 
-  overflow-y: auto; 
-  transform: translateY(100%); 
-  transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+/* --- スマホで表示されたときのアニメーション --- */
+#modal.show #modalContent {
+  transform: translateY(0); /* 枠外から画面内に引き上げる */
 }
 
-#modal.show #modalContent { 
-  transform: translateY(0); 
-}
-
-/* --- PC・タブレット向けの調整（幅768px以上） --- */
+/* =========================================
+   PC・タブレット向けの調整（幅768px以上）
+   ========================================= */
 @media (min-width: 768px) {
-  .image-slider img {
-    height: 380px !important;
+  #modal {
+    align-items: center; /* ★PC：画面のど真ん中に配置 */
   }
-
+  
   #modalContent {
-    width: 90%;
-    max-width: 1100px;     /* 横並び2カラムが綺麗に収まる幅 */
-    height: 85vh;          /* 浮いている感を出すために高さを少し抑える */
-    border-radius: 24px;   /* 四隅すべてを丸く */
-    padding: 40px; 
-    transform: translateY(20px); 
+    width: 95%;
+    max-width: 1100px;
+    max-height: 90vh;
+    border-radius: 24px; /* PC：四隅をすべて丸く */
+    padding: 40px;
+    transform: translateY(20px); /* PC：少し下からふわっと出す */
     opacity: 0;
-    transition: all 0.3s ease;
+    overflow-y: visible;
   }
 
   #modal.show #modalContent {
     transform: translateY(0);
     opacity: 1;
   }
+}
 
   /* PCでは写真を大きく表示 */
  .image-slider img {
   flex: 0 0 100%;
   scroll-snap-align: center;
   /* スマホの横並び時に大きすぎないよう高さを指定（重要） */
-  height: 180px !important; 
+  height: 100% !important; 
   object-fit: contain;
   background: #f8fafc;
   border-radius: 12px;
 }
-}
+
 /* スクロールバー非表示 */
 ::-webkit-scrollbar { display: none; }
 
@@ -266,52 +264,53 @@ input[type="search"] {
 
 
 
-/* --- Amazon風：横長機材カード --- */
+/* --- スマホ向け：ECアプリ風 横長機材カード --- */
 .equipment-card {
-  display: flex; /* 横並びにする */
+  display: flex;
+  flex-direction: row;
   background: white;
-  border-radius: 16px;
+  border-radius: 20px; /* 角丸を少し大きくして柔らかい印象に */
   overflow: hidden;
-  height: 110px; /* カードの高さを統一 */
-  border: 1px solid #eef2f6;
-  margin-bottom: 8px; /* カード同士の間隔 */
-  transition: all 0.2s ease;
+  min-height: 120px;
+  border: none; /* 枠線を消して影で浮き立たせる */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* ほんのり影をつける */
+  margin-bottom: 16px; /* カード間の余白 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  position: relative; /* 矢印アイコンの配置基準にするため追加 */
 }
 
 .equipment-card:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
   background-color: #f8fafc;
 }
 
-/* 左側：画像エリア（正方形を維持） */
+/* 画像エリア（左側） */
 .card-img-box {
-  width: 110px;
-  height: 110px;
-  background-color: #f1f5f9;
+  width: 130px; /* 少し幅を広げて正方形に近づける */
+  background-color: #f8fafc;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-right: 1px solid #f1f5f9;
 }
 
 .card-img-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 枠に合わせて切り抜き/調整 */
+  object-fit: cover; /* 画像を枠いっぱいに埋める */
 }
 
-/* 右側：テキストエリア */
+/* テキストエリア（右側） */
 .card-content {
   flex: 1;
-  padding: 10px 12px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-width: 0; /* 文字溢れ防止用 */
+  min-width: 0; /* スマホで文字がはみ出さないようにする魔法のコード */
 }
 
-/* 機材名を2行までに制限（Amazon風） */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -319,9 +318,25 @@ input[type="search"] {
   overflow: hidden;
 }
 
+/* --- PC・タブレット向けの調整（幅768px以上） --- */
+@media (min-width: 768px) {
+  .equipment-card {
+    flex-direction: column; /* PCでは縦型カードに変更 */
+    height: 100%; /* 高さをコンテンツに合わせる */
+    min-height: 280px;
+  }
 
-.cursor-zoom-in {
-  cursor: zoom-in;
+  .card-img-box {
+    width: 100%;
+    height: 180px; /* PCでの画像エリアの高さ */
+    border-right: none;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .card-content {
+    padding: 16px;
+    flex-grow: 1;
+  }
 }
 
 

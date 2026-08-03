@@ -27,47 +27,82 @@
 <body class="bg-blue-80 text-slate-900 antialiased">
 
 <div class="w-full max-w-screen-xl mx-auto min-h-screen flex flex-col bg-white shadow-xl">
-  <header class="sticky top-0 bg-slate-300 backdrop-blur-lg z-40 px-5 pb-4 border-b border-slate-300">
-  <div class="flex items-center justify-between mb-4">
-    <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">機材検索</h1>
-    <span id="hit-count" class="bg-blue-100 text-blue-600 text-xs font-bold px-2.5 py-1 rounded-full">-- 件</span>
-  </div>
-
-<div id="install-area" class="mb-6 bg-blue-600 rounded-[32px] p-6 shadow-xl shadow-blue-900/20 transition-all duration-300" style="display:none;">
-  <div class="flex flex-col items-center text-center gap-5">
+  <header class="sticky top-0 bg-white/85 backdrop-blur-xl z-40 px-5 pt-4 pb-5 border-b border-slate-200/60 shadow-sm">
+  <div class="flex items-center justify-between mb-5">
     
-    <div class="space-y-2">
-      <div class="text-3xl">📱</div>
-      <h2 class="text-white text-lg font-black tracking-tight">
-        アプリ版をホーム画面に追加
-      </h2>
-      <p class="text-blue-100 text-[11px] font-medium leading-relaxed opacity-90">
-        全画面表示で、機材検索がもっとスムーズに。<br>オフラインでも使いやすくなります。
-      </p>
-    </div>
-    
-    <div class="flex flex-col w-full gap-3">
-      <button onclick="openInstallDialog()" 
-              class="w-full bg-white text-blue-700 py-3.5 rounded-2xl text-sm font-black shadow-lg active:scale-[0.97] transition-all">
-        ホーム画面に追加する
-      </button>
+    <!-- ★ここを変更：アイコンとタイトルを横並びにするグループ -->
+    <div class="flex items-center gap-3">
+      <!-- 小さくしたアイコン画像（角を少し丸めて影をつけています） -->
+      <img src="icon.png" alt="アプリアイコン" class="w-8 h-8 rounded-lg shadow-sm border border-slate-100 object-cover">
       
-      <button onclick="hideInstallBar()" 
-              class="text-white/60 text-xs font-bold hover:text-white transition-colors py-1">
-        今はしない
-      </button>
+      <!-- タイトル：少しグラデーションを入れて高級感を出す -->
+      <h1 class="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-slate-700">
+        機材検索
+      </h1>
     </div>
 
-  </div>
-</div>
-  
-  <div class="flex flex-col md:flex-row gap-3">
-    <div class="relative flex-[2]">
-      <input id="q" type="search" placeholder="機材名・コードで検索..." 
-             class="w-full pl-4 pr-10 py-3 rounded-2xl bg-slate-100 border-none focus:ring-2 focus:ring-blue-500 transition-all text-base" />
+    <!-- 件数バッジ：より目立たせ、ラベルを追加 -->
+    <div class="flex items-center gap-2">
+      <span class="text-[10px] font-bold text-slate-400 tracking-wider">該当件数</span>
+      <span id="hit-count" class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md shadow-blue-600/20">-- 件</span>
     </div>
+  </div>
+
+  <!-- インストールダイアログ（既存機能維持） -->
+  <div id="install-area" class="mb-6 bg-blue-600 rounded-[32px] p-6 shadow-xl shadow-blue-900/20 transition-all duration-300" style="display:none;">
+    <div class="flex flex-col items-center text-center gap-5">
+      <div class="space-y-2">
+        <div class="text-3xl">📱</div>
+        <h2 class="text-white text-lg font-black tracking-tight">アプリ版をホーム画面に追加</h2>
+        <p class="text-blue-100 text-[11px] font-medium leading-relaxed opacity-90">
+          全画面表示で、機材検索がもっとスムーズに。<br>オフラインでも使いやすくなります。
+        </p>
+      </div>
+      <div class="flex flex-col w-full gap-3">
+        <button onclick="openInstallDialog()" class="w-full bg-white text-blue-700 py-3.5 rounded-2xl text-sm font-black shadow-lg active:scale-[0.97] transition-all">
+          ホーム画面に追加する
+        </button>
+        <button onclick="hideInstallBar()" class="text-white/60 text-xs font-bold hover:text-white transition-colors py-1">
+          今はしない
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 検索・フィルターエリア -->
+  <div class="flex flex-col md:flex-row gap-3">
+    
+    <!-- 検索バー -->
+    <div class="relative flex-[2] group">
+      <!-- 虫眼鏡アイコン -->
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      </div>
+      <input id="q" type="search" placeholder="機材名・コードで検索..." 
+             class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-slate-100/80 border border-transparent focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 transition-all text-sm font-bold text-slate-800 placeholder-slate-400 shadow-inner appearance-none" />
+    </div>
+
+    <!-- フィルター群 -->
     <div class="flex flex-1 gap-2">
-      <select id="cat" class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none text-sm font-medium text-slate-600 focus:ring-2 focus:ring-blue-500"></select>
+      <!-- カテゴリフィルター -->
+      <div class="relative w-full">
+        <select id="cat" class="w-full appearance-none pl-4 pr-10 py-3.5 rounded-2xl bg-white border border-slate-200 text-sm font-bold text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 transition-all shadow-sm cursor-pointer"></select>
+        <!-- カスタムの矢印アイコン -->
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+      </div>
+      
+      <!-- Baseフィルター -->
+      <div class="relative w-full">
+        <select id="base" class="w-full appearance-none pl-4 pr-10 py-3.5 rounded-2xl bg-white border border-slate-200 text-sm font-bold text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 transition-all shadow-sm cursor-pointer">
+          <option value="">全Base</option>
+        </select>
+        <!-- カスタムの矢印アイコン -->
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -132,6 +167,7 @@ async function loadData() {
 function initAfterLoad() {
   normalizeColumns();
   bindCategoryOptions();
+  bindBaseOptions();
   applyFilters();
 }
 
@@ -153,6 +189,19 @@ function normalizeColumns(){
   };
 }
 
+function bindBaseOptions() {
+  let html = '<option value="">全Base</option>';
+  for (const region in colMap.baseRegions) {
+    html += `<optgroup label="${region}">`;
+    colMap.baseRegions[region].forEach(b => {
+      // 表示から「Base」という文字を省いてスッキリさせる
+      html += `<option value="${b}">${b.replace('Base','')}</option>`;
+    });
+    html += `</optgroup>`;
+  }
+  el('base').innerHTML = html;
+}
+
 function bindCategoryOptions(){
   const set=new Set();
   rawData.forEach(r=> { if(r[colMap.category]) set.add(r[colMap.category]) });
@@ -164,13 +213,16 @@ function bindCategoryOptions(){
 const runSearch = _.debounce(() => { applyFilters(); }, 250);
 el('q').addEventListener('input', runSearch);
 el('cat').addEventListener('change', runSearch);
+el('base').addEventListener('change', runSearch);
 
 function applyFilters(){
   const kw = (el('q').value || '').toLowerCase();
   const cat = el('cat').value;
-  
+  const base = el('base').value;
+
   viewData = rawData.filter(r => {
     if(cat && r[colMap.category] !== cat) return false;
+    if(base && r[base] !== '〇' && r[base] !== '△') return false;
     const name = (r[colMap.name] || '').toLowerCase();
     const code = (r[colMap.id] || '').toLowerCase();
     return name.includes(kw) || code.includes(kw);
@@ -178,7 +230,7 @@ function applyFilters(){
   render();
 }
 
-// リスト描画（カードデザイン：影強化版）
+// リスト描画（ECサイト風レスポンシブデザイン）
 function render(){
   const listEl = el('list');
   el('hit-count').textContent = `${viewData.length} 件`;
@@ -194,86 +246,153 @@ function render(){
   }
 
   listEl.innerHTML = viewData.map((r, i) => {
-    // 最初の1枚をサムネイルに使用（sz=w300で軽量化）
     const firstImgId = (r.images && r.images.length > 0) ? r.images[0] : null;
     const thumbUrl = firstImgId ? `https://drive.google.com/thumbnail?id=${firstImgId}&sz=w300` : null;
 
-    return `
-    <div class="equipment-card group" onclick="showModal(${i})">
+   return `
+    <!-- ★ flex-col などの強制縦並びクラスを削除し、app.css の指示に従わせる -->
+    <div class="equipment-card group hover:border-blue-300 hover:shadow-xl md:hover:-translate-y-1 transition-all duration-300" onclick="showModal(${i})">
       
-      <div class="card-img-box">
+      <!-- 左側：画像エリア -->
+      <div class="card-img-box relative">
         ${thumbUrl 
-          ? `<img src="${thumbUrl}" loading="lazy" class="group-hover:scale-105 transition-transform duration-300">` 
-          : `<div class="flex flex-col items-center text-slate-300">
-               <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-               <span class="text-[8px] font-bold uppercase">No Image</span>
-             </div>`
+          ? `<img src="${thumbUrl}" loading="lazy" class="group-hover:scale-105 transition-transform duration-500">` 
+          : `<div class="flex flex-col items-center text-slate-300/50 w-full">
+               <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+               <span class="text-[9px] font-bold tracking-widest uppercase">No Image</span>
+             </div>
+             <div class="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px]"></div>`
         }
       </div>
 
+      <!-- 右側：テキスト・詳細エリア -->
       <div class="card-content">
-        <div class="w-full">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase">
-              ${r[colMap.id]}
-            </span>
-            <span class="text-[10px] font-bold text-slate-400 truncate ml-2">
-              ** ${r[colMap.category]} **
-            </span>
-          </div>
-          <h3 class="font-bold text-slate-800 text-sm leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">
-            ${r[colMap.name]}
-          </h3>
+        <!-- 上部：機材コードバッジ ＆ カテゴリ -->
+        <div class="flex justify-between items-center mb-1.5">
+          <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-wider">
+            ${r[colMap.id]}
+          </span>
+          <span class="text-[10px] font-bold text-slate-400 truncate ml-2">
+            <!-- いただいた画像に合わせ、カテゴリの両端に ** ** を表示 -->
+            ** ** | ${r[colMap.category] ? r[colMap.category].replace(/\*/g, '').trim() : 'カテゴリなし'} ** **
+          </span>
         </div>
         
-        <div class="flex items-end justify-between mt-auto">
+        <!-- 中部：機材名 -->
+        <h3 class="font-bold text-slate-800 text-sm md:text-base leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors mb-2">
+          ${r[colMap.name]}
+        </h3>
+        
+        <div class="mt-auto flex justify-between items-end">
+          <!-- スペック（単重・結束数） -->
           <div class="flex gap-4">
             <div class="flex flex-col">
-              <span class="text-[8px] text-slate-400 font-black uppercase leading-none mb-1">単重</span>
-              <span class="text-xs font-bold text-slate-700">${r[colMap.weight]}<small class="font-normal ml-0.5">kg</small></span>
+              <span class="text-[9px] text-slate-400 font-bold mb-0.5">単重</span>
+              <span class="text-xs md:text-sm font-black text-slate-700">${r[colMap.weight] || '0'}<small class="font-normal text-[10px] ml-0.5 text-slate-500">kg</small></span>
             </div>
             <div class="flex flex-col">
-              <span class="text-[8px] text-slate-400 font-black uppercase leading-none mb-1">結束数</span>
-              <span class="text-xs font-bold text-slate-700">${r[colMap.stock]}<small class="font-normal ml-0.5">束</small></span>
+              <span class="text-[9px] text-slate-400 font-bold mb-0.5">結束数</span>
+              <span class="text-xs md:text-sm font-black text-slate-700">${r[colMap.stock] || '0'}<small class="font-normal text-[10px] ml-0.5 text-slate-500">束</small></span>
             </div>
           </div>
           
-          <div class="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          <!-- スマホ用：右矢印（md:hidden で PC画面では非表示にする） -->
+          <div class="text-slate-300 md:hidden pr-1 pb-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
             </svg>
           </div>
         </div>
+        
+        <!-- PC用：詳細を確認するボタン（hidden md:block で スマホ画面では非表示にする） -->
+        <div class="hidden md:block w-full bg-slate-50 text-slate-500 text-xs font-bold py-2.5 rounded-lg text-center mt-4 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+          詳細を確認する
+        </div>
       </div>
     </div>
-  `}).join('');
+    `}).join('');
 }
 
 
-// モーダル表示
+// ==========================================
+// ECサイト風 モーダル＆バリエーション切り替え処理
+// ==========================================
+
+let currentVariations = [];
+
+// ① 機材CDから「アルファベットのベース部分（例：IQC）」を抽出する関数
+function extractBaseCode(cd) {
+  if (!cd) return "";
+  // 最初に出てくる数字以降をすべて削り、プレフィックス（文字）だけにする
+  return cd.replace(/[0-9０-９]+.*$/, '').trim();
+}
+
+// ② ボタンに表示する文字（サイズや色）を機材名から抽出する関数
+function extractSizeLabel(name) {
+  if (!name) return "標準";
+  const match = name.match(/[0-9０-９.\s]+[^0-9０-９]*$/);
+  return match ? match[0].trim() : "標準";
+}
+
+// ③ モーダルを開く処理（機材CD基準でのグループ化 ＋ 降順ソート）
 function showModal(idx){
   const r = viewData[idx];
+  
+  // 機材CD（id）からベースコードを取得
+  const baseCode = extractBaseCode(r[colMap.id]);
+  
+  // ベースコードが完全に一致するものを抽出
+  currentVariations = rawData.filter(item => {
+    const itemCode = item[colMap.id];
+    if (!itemCode) return false;
+    return extractBaseCode(itemCode) === baseCode;
+  });
 
-  console.log("選択した機材の全データ:", r); 
+  // ★ 追加：抽出したバリエーションをサイズ（数字）の降順に並び替え
+  currentVariations.sort((a, b) => {
+    const getNum = (str) => {
+      // 文字列から数字部分だけを抽出（全角・半角対応）
+      const match = (str || '').match(/[0-9０-９.]+/);
+      if (!match) return 0;
+      // 全角数字を半角に変換して数値化
+      const numStr = match[0].replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+      return parseFloat(numStr);
+    };
+    
+    const numA = getNum(a[colMap.name]);
+    const numB = getNum(b[colMap.name]);
+    return numA - numB; // 降順（大きい順）
+  });
 
-  // ★ここから差し替え開始★
-  // --- 1. 画像スライダーの生成ロジック（矢印＆ドット付き） ---
+  renderModalContent(r);
+  
+  const modal = el('modal');
+  modal.style.display = 'flex';
+  setTimeout(() => modal.classList.add('show'), 10);
+}
+
+function switchVariation(id) {
+  const newItem = currentVariations.find(v => v[colMap.id] === id);
+  if(newItem) {
+    renderModalContent(newItem);
+  }
+}
+
+function renderModalContent(r) {
   const imageIds = r.images || []; 
   let imageHTML = '';
 
   if (imageIds.length > 0) {
     const hasMultiple = imageIds.length > 1; 
-    
     imageHTML = `
-      <div class="slider-container relative w-full">
-        <div class="image-slider flex overflow-x-auto snap-x snap-mandatory gap-3 py-2 no-scrollbar" id="modalSlider">
+      <div class="slider-container relative w-full h-full">
+        <div class="image-slider flex overflow-x-auto snap-x snap-mandatory gap-3 no-scrollbar h-full items-center" id="modalSlider">
           ${imageIds.map(id => `
             <img src="https://drive.google.com/thumbnail?id=${id}&sz=w800" 
-                 class="flex-none w-full snap-center h-64 object-contain bg-slate-50 rounded-2xl shadow-sm cursor-zoom-in" 
+                 class="flex-none w-full h-full snap-center object-contain cursor-zoom-in p-2" 
                  loading="lazy"
                  onclick="openZoom(this.src)"> `).join('')}
         </div>
-        
         ${hasMultiple ? `
           <button class="slider-btn btn-prev absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur rounded-full shadow-lg flex items-center justify-center z-10" onclick="moveSlider(-1)">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" /></svg>
@@ -281,130 +400,128 @@ function showModal(idx){
           <button class="slider-btn btn-next absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur rounded-full shadow-lg flex items-center justify-center z-10" onclick="moveSlider(1)">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" /></svg>
           </button>
-          
-          <div class="slider-dots flex justify-center gap-1.5 mt-3" id="sliderDots">
-            ${imageIds.map((_, i) => `<div class="dot w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === 0 ? 'bg-blue-500 w-4' : 'bg-slate-300'}"></div>`).join('')}
-          </div>
         ` : ''}
       </div>`;
   } else {
     imageHTML = `
-      <div class="h-48 bg-slate-50 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-slate-200">
+      <div class="w-full h-full bg-slate-50 flex flex-col items-center justify-center border-2 border-dashed border-slate-200">
         <span class="text-3xl mb-2">📷</span>
         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No Image Available</span>
       </div>`;
   }
 
+  let sizeSelectorHTML = '';
+  if (currentVariations.length > 1) {
+    sizeSelectorHTML = `
+      <div class="mb-6 pt-4 border-t border-slate-100">
+        <span class="text-[11px] font-bold text-slate-400 block mb-3 uppercase tracking-wider">サイズを選択</span>
+        <div class="flex flex-wrap gap-2">
+          ${currentVariations.map(v => {
+            const sizeText = extractSizeLabel(v[colMap.name]);
+            const isActive = (v[colMap.id] === r[colMap.id]);
+            const btnClass = isActive 
+              ? 'bg-slate-900 text-white border-slate-900 shadow-md' 
+              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:bg-slate-50';
+            
+            return `
+              <button onclick="switchVariation('${v[colMap.id]}')" 
+                      class="min-w-[64px] px-3 py-2.5 md:py-2 border rounded-lg text-[13px] font-bold transition-all duration-200 ${btnClass}">
+                ${sizeText}
+              </button>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
   let baseHTML = '';
   for(const region in colMap.baseRegions){
-    baseHTML += `
-      <div class="mt-3">
-        <h4 class="text-[12px] font-black text-slate-400 mb-2 ml-1">${region}</h4>
-        <div class="flex flex-wrap gap-1.5">
-    `;
-
+    let regionHTML = '';
     colMap.baseRegions[region].forEach(b => {
       const val = r[b] || '–';
       let colorClass = '';
-      if (val === '〇') {
-        colorClass = 'bg-blue-50 text-blue-700 border-blue-200';
-      } else if (val === '△') {
-        colorClass = 'bg-yellow-50 text-yellow-800 border-yellow-300';
-      } else {
-        colorClass = 'bg-red-50 text-red-700 border-red-200 opacity-60'; // ×は少し薄くして視認性を高める
-      }
+      if (val === '〇') colorClass = 'bg-blue-50 text-blue-700 border-blue-200';
+      else if (val === '△') colorClass = 'bg-yellow-50 text-yellow-800 border-yellow-300';
+      else colorClass = 'bg-red-50 text-red-700 border-red-200 opacity-60';
 
-      baseHTML += `
-        <div class="border ${colorClass} rounded-lg py-1 px-2 flex items-center gap-1.5 min-w-[80px] justify-center">
+      regionHTML += `
+        <div class="border ${colorClass} rounded-lg py-1 px-2 flex items-center gap-1.5 min-w-[72px] justify-center">
           <span class="text-[9px] font-bold whitespace-nowrap">${b.replace('Base','')}</span>
           <span class="text-[10px] font-black">${val}</span>
         </div>`;
     });
-    baseHTML += `</div></div>`;
+    baseHTML += `
+      <div class="mt-4">
+        <h4 class="text-[11px] font-black text-slate-400 mb-2 ml-1">${region}</h4>
+        <div class="flex flex-wrap gap-1.5">${regionHTML}</div>
+      </div>`;
   }
 
-  // --- HTMLを組み立てて表示 ---
-  el('modalContent').innerHTML = `
-    <div class="bg-white pt-5 pb-4 px-4 rounded-t-[20px] relative z-20 border-b border-slate-100">
+ el('modalContent').innerHTML = `
+    <!-- ★ 追加：スクロールしても上部にピタッと固定されるヘッダーエリア -->
+    <div class="sticky top-[-10px] md:top-[-20px] z-50 flex justify-end w-full mb-4 pointer-events-none" style="margin-top: -10px;">
       
-      <div class="w-10 h-1 bg-slate-200 rounded-full mx-auto mb-4 sm:hidden"></div>
+      <!-- スマホ版：引き下げバー（中央に配置） -->
+      <div class="absolute left-1/2 -translate-x-1/2 top-2 w-12 h-1.5 bg-slate-200 rounded-full sm:hidden"></div>
       
-      <button onclick="closeModal()" class="absolute top-3 right-3 w-8 h-8 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center font-bold z-40">✕</button>
-
-      <div class="max-w-6xl mx-auto">
-        <div class="flex flex-row gap-4 items-start">
-          
-          <div class="w-[45%] flex-shrink-0">
-            ${imageHTML}
-          </div>
-
-          <div class="flex-1 min-w-0 pt-0.5">
-            <h2 class="text-[15px] font-black text-slate-950 leading-tight mb-1 line-clamp-2">${r[colMap.name]}</h2>
-            
-            <div class="space-y-1 text-[10px] border-t border-slate-100 pt-2">
-              <div class="flex justify-between border-b border-dotted border-slate-200 pb-0.5">
-                <span class="text-slate-400 flex-shrink-0">区分</span>
-                <span class="font-bold text-slate-800 truncate ml-2">${r[colMap.category] || '-'}</span>
-              </div>
-              <div class="flex justify-between border-b border-dotted border-slate-200 pb-0.5">
-                <span class="text-slate-400 flex-shrink-0">機材CD</span>
-                <span class="font-bold text-slate-800 truncate ml-2">${r[colMap.id] || '-'}</span>
-              </div>
-              <div class="flex justify-between border-b border-dotted border-slate-200 pb-0.5">
-                <span class="text-slate-400 flex-shrink-0">単重</span>
-                <span class="font-bold text-slate-800 ml-2">${r[colMap.weight] || '0'}kg</span>
-              </div>
-              <div class="flex justify-between border-b border-dotted border-slate-200 pb-0.5">
-                <span class="text-slate-400 flex-shrink-0">結束</span>
-                <span class="font-bold text-slate-800 ml-2">${r[colMap.stock] || '0'}束</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
+      <!-- 閉じるボタン（右側に配置） -->
+      <button onclick="closeModal()" class="w-8 h-8 bg-white/90 backdrop-blur-sm text-slate-500 rounded-full flex items-center justify-center font-bold shadow-md border border-slate-100 md:hover:bg-slate-200 transition-colors pointer-events-auto">✕</button>
     </div>
 
-    <div class="bg-white px-4 pt-4 pb-10 relative z-10">
-      <div class="max-w-6xl mx-auto">
-        <h3 class="text-[13px] font-bold text-slate-950 mb-3 flex items-center gap-2">
-          <span class="w-1 h-3 bg-blue-500 rounded-full"></span>取り扱いBase
-        </h3>
-        <div class="space-y-4">
-          ${baseHTML}
+    
+    <div class="flex flex-col md:flex-row md:gap-10 h-full overflow-y-auto md:overflow-hidden pb-8 md:pb-0">
+      
+      <!-- ★ スマホ時は高さ260px固定、PC時は550px固定になるよう調整 ★ -->
+      <div class="w-full md:w-[50%] flex-shrink-0 relative h-[260px] md:h-[550px] bg-slate-50 rounded-2xl overflow-hidden mb-6 md:mb-0 flex items-center">
+        ${imageHTML}
+      </div>
+
+      <div class="flex-1 min-w-0 md:overflow-y-auto pr-2 md:h-[550px] flex flex-col">
+        
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+          <span>${r[colMap.category] || 'ALL'}</span>
+          <span>/</span>
+          <span class="text-blue-600">${r[colMap.id] || '-'}</span>
+        </div>
+
+        <!-- スマホでも読みやすい文字サイズに調整 -->
+        <h2 class="text-xl md:text-2xl font-black text-slate-900 leading-tight mb-6">
+          ${r[colMap.name]}
+        </h2>
+        
+        ${sizeSelectorHTML}
+
+        <div class="bg-slate-50 rounded-2xl p-5 mb-8 border border-slate-100">
+          <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-3">
+            <span class="text-xs font-bold text-slate-500">単品重量</span>
+            <span class="text-lg font-black text-slate-900">${r[colMap.weight] || '0'} <span class="text-xs font-normal text-slate-500">kg</span></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-slate-500">結束数</span>
+            <span class="text-lg font-black text-slate-900">${r[colMap.stock] || '0'} <span class="text-xs font-normal text-slate-500">束</span></span>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-6 border-t border-slate-100">
+           <h3 class="text-[13px] font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <span class="w-1 h-3 bg-blue-500 rounded-full"></span>取り扱いBase
+          </h3>
+          <div class="space-y-4">
+            ${baseHTML}
+          </div>
         </div>
       </div>
     </div>
   `;
-  
-  // スライダーのスクロール監視（ドットの更新）
-  if (imageIds.length > 1) {
-    const s = el('modalSlider');
-    s.addEventListener('scroll', () => {
-      const index = Math.round(s.scrollLeft / s.clientWidth);
-      const dots = document.querySelectorAll('.dot');
-      dots.forEach((d, i) => {
-        if(i === index) {
-          d.classList.replace('bg-slate-300', 'bg-blue-500');
-          d.classList.add('w-4');
-        } else {
-          d.classList.replace('bg-blue-500', 'bg-slate-300');
-          d.classList.remove('w-4');
-        }
-      });
-    });
-  }
-
-  const modal = el('modal');
-  modal.style.display = 'flex';
-  setTimeout(() => modal.classList.add('show'), 10);
 }
 
 // 矢印ボタン用のスライド関数
 function moveSlider(dir) {
   const s = el('modalSlider');
-  s.scrollBy({ left: s.clientWidth * dir, behavior: 'smooth' });
+  if(s) s.scrollBy({ left: s.clientWidth * dir, behavior: 'smooth' });
 }
+
+
 // --- 1. モーダルを閉じる（既存） ---
 function closeModal(){
   const modal = el('modal');
